@@ -1,0 +1,64 @@
+TD ANSIBLE
+
+https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-and-upgrading-ansible
+
+CREATION GROUPE DE RESSOURCE
+
+az group create --name lyllansible --location francecentral
+
+CREATION VM
+
+az vm create \
+  --resource-group lyllansible \
+  --name vm1 \
+  --image UbuntuLTS \
+  --admin-username lylla \
+  --generate-ssh-keys \
+  --public-ip-sku Standard
+
+Vérification de la version de Ubuntu avec la commande : lbs_release –a
+  
+  OUVERTURE DU PORT 80
+  az vm open-port --port 80 --resource-group lyllansible --name vm
+ 
+ 
+ 
+ 
+CONNECTION SSH :
+ 
+vm : 20.163.244.55
+vm2: 52.191.51.214
+vm3: 20.163.241.21
+
+python3 -m pip install --user ansible-core== 6.7.0
+
+ssh-copy-id -i /home/lylla/.ssh/id_rsa 52.191.51.214
+ssh-copy-id -i /home/lylla/.ssh/id_rsa 40.117.146.106
+
+Your identification has been saved in /home/lylla/.ssh/id_rsa
+Your public key has been saved in /home/lylla/.ssh/id_rsa.pub
+
+connection ssh avec ansible/
+sur la VM ansible, copier les adresse ip des VM1&VM2
+et copier l'adresse IP de ansible sur les VM1&VM2.
+
+VM4 :
+
+ssh-rsa AAAAB3ssh-copy-id -i /home/lylla/.ssh/id_rsa 40.117.146.106NzaC1yc2EAAAADAQABAAABgQCtckGhSFlfE4uGgUjGpdMQub+raVkBweomgL9QPyXoJSIB0YEeOaNj1XtbaAQ/ldNR8+d4UFZQUsXF9x/KHJqOPKkHN5tVePF7X4H5lbbGccOZ47Hm26x6GlFts4FAcT2Xy3lOTWc/1aYYYZSGuD9O5ZyT93XRwW1mK/Z1ZgnwL5JQ/UnO6W4qut4IMEfaXyPxjtPTq+JCOjj0e/fI9GMDY8hn5G6vjq46dF7jnlucPN7B43QDLrrDX5pSCESaMdm4nv76LsWVnGCsQPfjIBgnPFrVWHKfDwPNECkHpmoJBEsQZneFlUWvH69tH5awxC1sMncUscq5MPP9qr5rHfX8/rstMwtGDu9yzmFktSuNsnsWpFJNNzYae9Kvoq7AbJG/bT2/xVbgAreI0VmTkoCdIDUGrW5qsj4jK2tQ3PN490LJcqeis/c1VRs4qBFRK/eu/D21pVYeUsSnHQ0DdzU26uNucoCw7QUK9K6XSZnlsVLGc4zoE0FbOU2RNQZ1t4E= generated-by-azure
+
+
+chmod 600 /home/lylla/.ssh/id_rsa 40.117.146.106
+
+Commandes SSH pour transférer clé vers serveur ou client : 
+
+1- Désactiver l'authentification par clé ssh et repasser en authentification par mdp sur la machine qui doit recevoir la clé publique
+2- ssh-copy-id -i ~/cheminverslaclé.pub user@x.x.x.x  on saisi le mdp de la machine distante 
+3- puis ssh -i nom-de-la-clé-privée user@x.x.x.x    si besoin on donne les autorisations à clé publique la machine distance avec cette commande : chmod 700 ~/.ssh*
+
+Pour pinguer les 2 autes VMs
+ansible -i mon_inventaire.ini -m ping all
+ansible -i mon_inventaire.ini -m ping apache
+
+pour connaitre la quantité du disque
+df -h
+ansible -i mon_inventaire.ini -m shell -a "df -h"
